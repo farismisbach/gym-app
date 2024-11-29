@@ -6,7 +6,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { useFonts } from 'expo-font'
 import { createStackNavigator } from '@react-navigation/stack';
-import "./global.css"
+import "./global.css";
 // Halo Faris
 import StartScreen from './app/screens/StartScreen';
 import LoginScreens from './app/screens/LoginScreen';
