@@ -14,6 +14,7 @@ import RegisterScreen from './app/screens/RegisterScreen';
 import HomeScreen from './app/screens/HomeScreen';
 import CameraScreen from './app/screens/CameraScreen';
 import CalendarScreen from './app/screens/CalendarScreen';
+import ProfileScreen from './app/screens/ProfileScreen';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 SplashScreen.preventAutoHideAsync();
@@ -44,8 +45,8 @@ function MainTabNavigator() {
               padding: 8,
               marginTop: 10,
             };
-          } else if (route.name === 'CalendarScreen') {
-            iconName = focused ? require('./assets/items/calendar-active.png') : require('./assets/items/calendar.png');
+          } else if (route.name === 'ProfileScreen') {
+            iconName = focused ? require('./assets/items/profile_tab_active.png') : require('./assets/items/profile_tab.png');
           }
 
           return (
@@ -108,7 +109,7 @@ function MainTabNavigator() {
           tabBarStyle: { display: 'none' },
         }}
       />
-      <Tab.Screen name="CalendarScreen" component={CalendarScreen} />
+      <Tab.Screen name="ProfileScreen" component={ProfileScreen} />
     </Tab.Navigator>
   )
 }
