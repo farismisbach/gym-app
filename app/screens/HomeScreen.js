@@ -57,7 +57,7 @@ const HomeScreen = ({navigation}) => {
         <View className='flex-row justify-between items-center px-6 pt-4'>
           <View className='flex-row items-center'>
             <Image 
-              source={require('../../assets/items/profile.png')}
+              source={require('../../assets/items/profile.jpg')}
               className='w-12 h-12 rounded-full mr-4'
             />
             <View>

@@ -31,7 +31,7 @@ const LoginScreens = ({ navigation }) => {
                 {/* Header Section */}
                 <View className="w-full p-4">
                     <TouchableOpacity 
-                        onPress={() => navigation.canGoBack() && navigation.goBack()}
+                        onPress={() => navigation.replace('StartScreen')}
                         className="w-10 h-10 bg-[#2A2A2A] rounded-full justify-center items-center"
                     >
                         <Text className="text-[#E5FF00] text-2xl">&larr;</Text>

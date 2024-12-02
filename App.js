@@ -47,6 +47,8 @@ function MainTabNavigator() {
             };
           } else if (route.name === 'ProfileScreen') {
             iconName = focused ? require('./assets/items/profile_tab_active.png') : require('./assets/items/profile_tab.png');
+          }  else if (route.name === 'CalenderScreen') {
+            iconName = focused ? require('./assets/items/calendar-active.png') : require('./assets/items/calendar.png');
           }
 
           return (
@@ -109,6 +111,7 @@ function MainTabNavigator() {
           tabBarStyle: { display: 'none' },
         }}
       />
+      <Tab.Screen name="CalenderScreen" component={CalendarScreen} />
       <Tab.Screen name="ProfileScreen" component={ProfileScreen} />
     </Tab.Navigator>
   )
