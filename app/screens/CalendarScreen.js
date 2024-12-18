@@ -15,7 +15,7 @@ const CalendarScreen = () => {
   };
 
   return (
-    <SafeAreaView className='flex-1 bg-black'>
+    <SafeAreaView className='flex-1 bg-[#1E1E1E]'>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View className='px-4 pt-12 pb-6'>
           <Text className='font-poppins-bold text-xl text-white'>24 Hour Fitness</Text>

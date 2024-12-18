@@ -3,8 +3,10 @@ import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { popular } from '../data/DataArrays'
+import { useUser } from '@clerk/clerk-expo'
 
 const HomeScreen = ({navigation}) => {
+  const {user, isLoading} = useUser();
   const screenWidth = Dimensions.get('window').width
   
   const ProgressBar = ({ progress, total }) => (
@@ -57,11 +59,11 @@ const HomeScreen = ({navigation}) => {
         <View className='flex-row justify-between items-center px-6 pt-4'>
           <View className='flex-row items-center'>
             <Image 
-              source={require('../../assets/items/profile.jpg')}
+              source={{uri:user?.imageUrl}}
               className='w-12 h-12 rounded-full mr-4'
             />
             <View>
-              <Text className='text-[#4ADE80] text-lg font-semibold'>Hello Justin!</Text>
+              <Text className='text-[#4ADE80] text-lg font-semibold'>Hello {user?.firstName}!</Text>
               <Text className='text-[#B2B1A8]'>Let's start your day</Text>
             </View>
           </View>
