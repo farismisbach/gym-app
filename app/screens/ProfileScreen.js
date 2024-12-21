@@ -1,8 +1,10 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { View, Text, Image, TouchableOpacity, ScrollView, TextInput, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useUser, useClerk } from '@clerk/clerk-expo';
+import { onValue, ref, set, get } from 'firebase/database';
+import database from '../../firebase';
 
 
 const ProfileScreen = () => {
@@ -10,6 +12,32 @@ const ProfileScreen = () => {
   const passwordLength = user?.password?.length;
   const joinedDate = user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A';
   const { signOut } = useClerk()
+  const [weight, setWeight] = useState({ start: '', current: '', target: '' });
+
+
+  useEffect(() => {
+    // Fetch weight data for the user from Firebase
+    const weightRef = ref(database, `weights/${user.id}`);
+    const unsubscribe = onValue(weightRef, (snapshot) => {
+      if (snapshot.exists()) {
+        setWeight(snapshot.val());
+      } else {
+        console.log("No weight data found for user.");
+      }
+    });
+
+    return () => unsubscribe(); // Cleanup listener
+  }, [user.id]);
+
+  const handleSave = async () => {
+    try {
+      await set(ref(database, `weights/${user.id}`), weight);
+      Alert.alert('Success', 'Weight data saved successfully!');
+    } catch (error) {
+      console.error('Error saving weight data:', error);
+      Alert.alert('Error', 'Failed to save weight data.');
+    }
+  };
 
   const handleSignOut = async () => {
     try {
@@ -41,23 +69,96 @@ const ProfileScreen = () => {
 
         {/* Bar Section */}
         <View className="mt-8 bg-[#2A2A2A] rounded-2xl p-4">
-          <Text className="text-[#4ADE80] font-semibold text-lg">Weight</Text>
-          <View className="flex-row justify-between items-center mt-2">
-            <View>
-              <Text className="text-[#B2B1A8]">Start</Text>
-              <Text className="text-[#4ADE80]">68kg</Text>
-            </View>
-            <View>
-              <Text className="text-[#B2B1A8]">Current</Text>
-              <Text className="text-[#4ADE80]">56kg</Text>
-            </View>
-            <View>
-              <Text className="text-[#B2B1A8]">Target</Text>
-              <Text className="text-[#4ADE80]">52kg</Text>
-            </View>
+          <Text className="text-[#4ADE80] font-semibold text-lg">Weight Input</Text>
+
+          {/* Weight Inputs */}
+          <View className="mt-4">
+            <Text className="text-[#B2B1A8]">Start</Text>
+            <TextInput
+              style={{
+                backgroundColor: '#333',
+                color: '#4ADE80',
+                padding: 10,
+                borderRadius: 8,
+                marginTop: 4,
+              }}
+              value={weight.start}
+              onChangeText={(text) => setWeight({ ...weight, start: text })}
+              keyboardType="numeric"
+              placeholder="Enter starting weight"
+              placeholderTextColor="#888"
+            />
           </View>
-          <View className="h-4 bg-[#4ADE80] rounded-full mt-4" style={{ width: '82%' }} />
+
+          <View className="mt-4">
+            <Text className="text-[#B2B1A8]">Current</Text>
+            <TextInput
+              style={{
+                backgroundColor: '#333',
+                color: '#4ADE80',
+                padding: 10,
+                borderRadius: 8,
+                marginTop: 4,
+              }}
+              value={weight.current}
+              onChangeText={(text) => setWeight({ ...weight, current: text })}
+              keyboardType="numeric"
+              placeholder="Enter current weight"
+              placeholderTextColor="#888"
+            />
+          </View>
+
+          <View className="mt-4">
+            <Text className="text-[#B2B1A8]">Target</Text>
+            <TextInput
+              style={{
+                backgroundColor: '#333',
+                color: '#4ADE80',
+                padding: 10,
+                borderRadius: 8,
+                marginTop: 4,
+              }}
+              value={weight.target}
+              onChangeText={(text) => setWeight({ ...weight, target: text })}
+              keyboardType="numeric"
+              placeholder="Enter target weight"
+              placeholderTextColor="#888"
+            />
+          </View>
+
+          {/* Save Button */}
+          <TouchableOpacity
+            style={{
+              marginTop: 20,
+              backgroundColor: '#4ADE80',
+              padding: 15,
+              borderRadius: 8,
+              alignItems: 'center',
+            }}
+            onPress={handleSave}
+          >
+            <Text style={{ color: '#fff', fontWeight: 'bold' }}>Save</Text>
+          </TouchableOpacity>
         </View>
+
+        <View className="mt-8 bg-[#2A2A2A] rounded-2xl p-4 w-full">
+                  <Text className="text-[#4ADE80] font-semibold text-lg">Weight</Text>
+                  <View className="flex-row justify-between items-center mt-2">
+                    <View className='flex-1'>
+                      <Text className="text-[#B2B1A8]">Start</Text>
+                      <Text className="text-[#4ADE80]">{weight.start}kg</Text>
+                    </View>
+                    <View className='flex-1'>
+                      <Text className="text-[#B2B1A8]">Current</Text>
+                      <Text className="text-[#4ADE80]">{weight.current}kg</Text>
+                    </View>
+                    <View className='flex-1'>
+                      <Text className="text-[#B2B1A8]">Target</Text>
+                      <Text className="text-[#4ADE80]">{weight.target}kg</Text>
+                    </View>
+                  </View>
+                  <View className="h-4 bg-[#4ADE80] rounded-full mt-4" style={{ width: `${Math.min(100, (weight.current / weight.target) * 100)}%` }} />
+                </View>
 
         {/* Account Info */}
         <View className="mt-8 bg-[#2A2A2A] rounded-2xl p-4">
@@ -78,30 +179,6 @@ const ProfileScreen = () => {
           <View>
             <Text className="text-[#B2B1A8]">Joined</Text>
             <Text className="text-[#4ADE80]">{joinedDate}</Text>
-          </View>
-        </View>
-
-        {/* Sharing and Reviews */}
-        <View className="mt-4 bg-[#2A2A2A] rounded-2xl p-4">
-          <View className="flex-row justify-between items-center mb-4">
-            <Text className="text-[#4ADE80] font-semibold text-lg">Sharing & Reviews</Text>
-            <TouchableOpacity>
-              <Text className="text-[#4ADE80]">Edit</Text>
-            </TouchableOpacity>
-          </View>
-          <View className="flex-row items-center justify-between">
-            <View className="flex-row items-center">
-              <Ionicons name="share-social-outline" size={20} color="#4ADE80" />
-              <Text className="text-[#4ADE80] ml-2">Share with friends</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color="#B2B1A8" />
-          </View>
-          <View className="flex-row items-center justify-between mt-4">
-            <View className="flex-row items-center">
-              <Ionicons name="star-outline" size={20} color="#4ADE80" />
-              <Text className="text-[#4ADE80] ml-2">Reviews</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color="#B2B1A8" />
           </View>
         </View>
 

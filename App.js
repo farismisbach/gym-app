@@ -4,6 +4,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font'
 import * as SecureStore from 'expo-secure-store'
 import "./global.css";
+import UploadData from './app/data/UploadData';
 
 import TabNavigation from './app/navigations/TabNavigation';
 import LoginNaviagtion from './app/navigations/LoginNaviagtion';

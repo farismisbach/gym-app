@@ -3,9 +3,10 @@ import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { NavigationContainer } from '@react-navigation/native';
 import HomeScreen from '../screens/HomeScreen';
-import CameraScreen from '../screens/CameraScreen';
+import WorkoutNavigation from './WorkoutNavigation';
 import CalendarScreen from '../screens/CalendarScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import FoodScreen from '../screens/FoodScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -25,35 +26,34 @@ const TabNavigation = () => {
 
           if(route.name === 'HomeScreen') {
             iconName = focused ? require('../../assets/items/home-active.png') : require('../../assets/items/home.png');
-          } else if (route.name === 'CameraScreen') {
+          } else if (route.name === 'WorkoutNavigation') {
             iconName = focused ? require('../../assets/items/dumble-active.png') : require('../../assets/items/dumble.png');
             iconStyle = {
               ...iconStyle,
-              width: 40,
-              height: 40,
-              backgroundColor: focused ? '#CCFF00' : 'transparent',
-              borderRadius: 20,
-              padding: 8,
+              width: 45,
+              height: 45,
               marginTop: 10,
             };
           } else if (route.name === 'ProfileScreen') {
             iconName = focused ? require('../../assets/items/profile_tab_active.png') : require('../../assets/items/profile_tab.png');
           }  else if (route.name === 'CalenderScreen') {
             iconName = focused ? require('../../assets/items/calendar-active.png') : require('../../assets/items/calendar.png');
+          } else if (route.name === 'FoodScreen') {
+            iconName = focused ? require('../../assets/items/food-active.png') : require('../../assets/items/food.png');
           }
 
           return (
             <View style={{
               alignItems: 'center',
               justifyContent: 'center',
-              paddingTop: route.name === 'CameraScreen' ? 0 : 12,
+              paddingTop: route.name === 'WorkoutNavigation' ? 0 : 12,
             }}>
               <Image 
                 source={iconName} 
                 style={iconStyle} 
                 resizeMode='contain'
               />
-              {focused && route.name !== 'CameraScreen' && (
+              {focused && route.name && (
                 <View 
                   style={{
                     width: 4,
@@ -96,12 +96,10 @@ const TabNavigation = () => {
     >
       <Tab.Screen name="HomeScreen" component={HomeScreen} />
       <Tab.Screen
-        name="CameraScreen"
-        component={CameraScreen}
-        options={{
-          tabBarStyle: { display: 'none' },
-        }}
+        name="WorkoutNavigation"
+        component={WorkoutNavigation}
       />
+      <Tab.Screen name="FoodScreen" component={FoodScreen} />
       <Tab.Screen name="CalenderScreen" component={CalendarScreen} />
       <Tab.Screen name="ProfileScreen" component={ProfileScreen} />
     </Tab.Navigator>

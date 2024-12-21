@@ -2,10 +2,13 @@ import { View, Text, TouchableOpacity, Image, Dimensions, ImageBackground } from
 import React, { useState } from 'react'
 import * as WebBrowser from 'expo-web-browser'
 import { useOAuth } from '@clerk/clerk-expo'
+import { useAuth } from '@clerk/clerk-expo';
+import { getAuth, signInWithCustomToken } from 'firebase/auth';
 import * as Linking from 'expo-linking'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { emailValidator } from '../validator/emailValidator'
 import { passwordValidator } from '../validator/passwordValidator'
+import { getFirebaseToken } from '../../firebase'
 import CustomButton from '../components/CustomButton'
 import BackButton from '../components/BackButton'
 import TextInput from '../components/TextInput'
@@ -28,6 +31,8 @@ export const useWarmUpBrowser = () => {
 const LoginScreens = ({ navigation }) => {
     const [email, setEmail] = useState({ value: "", error: "" });
     const [password, setPassword] = useState({ value: "", error: "" })
+    const {getToken} = useAuth()
+    const auth = getAuth();
 
     useWarmUpBrowser()
 
@@ -40,29 +45,23 @@ const LoginScreens = ({ navigation }) => {
           })
     
           if (createdSessionId) {
-            setActive({ session: createdSessionId })
+            await setActive({ session: createdSessionId });
+
+            // Dapatkan token ID dari Clerk
+            const idToken = await getToken({ template: "integration_firebase" });
+      
+            // Login ke Firebase menggunakan token Clerk
+            const firebaseUser = await signInWithCustomToken(auth, idToken);
+    
           } else {
             // Use signIn or signUp for next steps such as MFA
           }
+
         } catch (err) {
           console.error('OAuth error', err)
         }
       }, [])
-    
-    const onLoginPressed = () => {
-        const emailError = emailValidator(email.value);
-        const passwordError = passwordValidator(password.value);
-        if (emailError || passwordError) {
-            setEmail({ ...email, error: emailError });
-            setPassword({ ...password, error: passwordError });
-            return;
-        }
-        navigation.reset({
-            index: 0,
-            routes: [{ name: "MainTabs" }],
-        });
-    }    
-
+       
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <ImageBackground source={require('../../assets/items/startingWallpaper.jpeg')} className='w-full h-full' resizeMode='cover'>

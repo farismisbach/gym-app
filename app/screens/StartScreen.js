@@ -31,7 +31,7 @@ const StartScreen = ({ navigation }) => {
             <View style={styles.contentContainer}>
               <View style={styles.textContainer}>
                 <Text style={styles.title}>
-                  Protect Your Health Companion
+                  GYM PLUS
                 </Text>
                 <Text style={styles.subtitle}>
                   Elevate Fitness Journey with a Cutting-Edge to Fuel Your Motivation & Crush Your Goals
